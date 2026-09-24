@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#b3202a">
+  <meta name="description" content="Карточки к первому уроку самоучителя сербского языка В. В. Чарского">
+  <title>Српски — тренажёр к уроку 1</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b3202a'/%3E%3Cpath d='M17 17h30v9H35v21h-9V26h-9z' fill='white'/%3E%3Ccircle cx='46' cy='45' r='6' fill='%231f3c69'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="app-header">
+      <div class="brand-mark" aria-hidden="true">СР</div>
+      <div class="brand-copy">
+        <p class="eyebrow">Сербский язык</p>
+        <h1>Урок 1 · Добро дошли!</h1>
+      </div>
+      <button class="icon-button" id="resetButton" type="button" aria-label="Сбросить прогресс" title="Сбросить прогресс">
+        <span aria-hidden="true">↺</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="today-panel" aria-labelledby="todayTitle">
+        <div>
+          <p class="eyebrow" id="todayTitle">Сегодня</p>
+          <p class="today-message" id="todayMessage">Можно начинать</p>
+        </div>
+        <div class="stats" aria-label="Статистика урока">
+          <div><strong id="statNew">0</strong><span>новых</span></div>
+          <div><strong id="statDue">0</strong><span>повторить</span></div>
+          <div><strong id="statHard">0</strong><span>трудных</span></div>
+          <div><strong id="statLearned">0</strong><span>изучено</span></div>
+        </div>
+      </section>
+
+      <nav class="deck-tabs" aria-label="Колоды урока">
+        <button class="deck-tab is-active" type="button" data-deck="main">
+          <span>Основное</span><small id="countMain">0</small>
+        </button>
+        <button class="deck-tab" type="button" data-deck="grammar">
+          <span>Грамматика</span><small id="countGrammar">0</small>
+        </button>
+        <button class="deck-tab" type="button" data-deck="reading">
+          <span>Чтение</span><small id="countReading">0</small>
+        </button>
+      </nav>
+
+      <section class="study-controls" aria-label="Настройки тренировки">
+        <label>
+          <span>Что учим</span>
+          <select id="studyMode">
+            <option value="all">Все карточки</option>
+            <option value="new">Только новые</option>
+            <option value="due">На повторение</option>
+            <option value="hard">Трудные</option>
+            <option value="learned">Изученные</option>
+          </select>
+        </label>
+        <label>
+          <span>Тип</span>
+          <select id="typeFilter">
+            <option value="all">Все типы</option>
+          </select>
+        </label>
+        <label>
+          <span>Направление</span>
+          <select id="direction">
+            <option value="mix">Вперемешку</option>
+            <option value="sr-ru">Сербский → русский</option>
+            <option value="ru-sr">Русский → сербский</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="trainer" aria-live="polite">
+        <div class="progress-line" aria-hidden="true"><span id="progressFill"></span></div>
+        <div class="card-meta">
+          <span class="pill" id="cardType">Выражение</span>
+          <span id="cardSection">Приветствия</span>
+          <span class="meta-spacer"></span>
+          <span id="cardPage">стр. 14</span>
+        </div>
+
+        <article class="flashcard" id="flashcard" tabindex="0" aria-label="Учебная карточка. Нажмите, чтобы показать ответ">
+          <div class="prompt-side">
+            <p class="side-label" id="promptLabel">По-сербски</p>
+            <div class="card-text" id="promptText">Dobro jutro!</div>
+            <button class="speak-button" id="speakButton" type="button" aria-label="Прослушать произношение">
+              <span aria-hidden="true">🔊</span><span>Слушать</span>
+            </button>
+          </div>
+          <div class="answer-side" id="answerSide" hidden>
+            <div class="divider"></div>
+            <p class="side-label" id="answerLabel">По-русски</p>
+            <div class="answer-text" id="answerText">Доброе утро!</div>
+            <p class="variants" id="variants" hidden></p>
+            <p class="note" id="note" hidden></p>
+          </div>
+        </article>
+
+        <button class="reveal-button" id="revealButton" type="button">Показать ответ <kbd>Space</kbd></button>
+
+        <div class="rating-buttons" id="ratingButtons" hidden>
+          <button type="button" data-rating="again" class="rating-again"><span>Не знаю</span><kbd>1</kbd></button>
+          <button type="button" data-rating="hard" class="rating-hard"><span>Трудно</span><kbd>2</kbd></button>
+          <button type="button" data-rating="know" class="rating-know"><span>Знаю</span><kbd>3</kbd></button>
+        </div>
+      </section>
+
+      <section class="empty-state" id="emptyState" hidden>
+        <div aria-hidden="true">✓</div>
+        <h2>В этой подборке всё готово</h2>
+        <p>Выберите другой режим или колоду.</p>
+        <button type="button" id="showAllButton">Показать все карточки</button>
+      </section>
+
+      <p class="source-note">По материалам урока 1, страницы 5–17. Прогресс хранится только на этом устройстве.</p>
+    </main>
+  </div>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
