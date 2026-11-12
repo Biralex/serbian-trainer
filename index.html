@@ -4,24 +4,51 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#b3202a">
-  <meta name="description" content="Карточки к первому уроку самоучителя сербского языка В. В. Чарского">
-  <title>Српски — тренажёр к уроку 1</title>
+  <meta name="description" content="Карточки к учебнику Ю. Шапич «Говори српски да те цео свет разуме»">
+  <title>Говори српски — тренажёр</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b3202a'/%3E%3Cpath d='M17 17h30v9H35v21h-9V26h-9z' fill='white'/%3E%3Ccircle cx='46' cy='45' r='6' fill='%231f3c69'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="page-shell">
     <header class="app-header">
-      <div class="brand-mark" aria-hidden="true">СР</div>
+      <div class="brand-mark" aria-hidden="true">ГС</div>
       <div class="brand-copy">
-        <p class="eyebrow">Сербский язык</p>
-        <h1>Урок 1 · Добро дошли!</h1>
+        <p class="eyebrow">Говори српски</p>
+        <h1 id="appTitle">Урок 1</h1>
       </div>
-      <button class="icon-button" id="resetButton" type="button" aria-label="Сбросить прогресс" title="Сбросить прогресс">
-        <span aria-hidden="true">↺</span>
-      </button>
+      <button class="icon-button" id="scriptButton" type="button" aria-label="Письмо" title="Кириллица / латиница">Ћ</button>
+      <button class="icon-button" id="menuButton" type="button" aria-label="Меню" title="Прогресс и настройки" aria-expanded="false" aria-controls="menuPanel">⋯</button>
     </header>
+
+    <section class="menu-panel" id="menuPanel" hidden>
+      <div class="menu-row">
+        <span>Письмо</span>
+        <div class="segmented" id="scriptSegmented">
+          <button type="button" data-script="cyr">Ћирилица</button>
+          <button type="button" data-script="lat">Latinica</button>
+          <button type="button" data-script="both">Обе</button>
+        </div>
+      </div>
+      <div class="menu-row">
+        <span>Новых карточек за тренировку</span>
+        <select id="newLimit">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="0">Без ограничения</option>
+        </select>
+      </div>
+      <div class="menu-row menu-actions">
+        <button type="button" id="exportButton">Сохранить прогресс в файл</button>
+        <button type="button" id="importButton">Загрузить прогресс из файла</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <button type="button" id="resetButton" class="danger">Сбросить прогресс урока</button>
+      </div>
+      <p class="menu-hint">Прогресс хранится в этом браузере. Файл прогресса — резервная копия и способ перенести прогресс между телефоном и компьютером.</p>
+    </section>
 
     <main>
       <section class="today-panel" aria-labelledby="todayTitle">
@@ -29,7 +56,7 @@
           <p class="eyebrow" id="todayTitle">Сегодня</p>
           <p class="today-message" id="todayMessage">Можно начинать</p>
         </div>
-        <div class="stats" aria-label="Статистика урока">
+        <div class="stats" id="lessonStats" aria-label="Статистика выбранного урока">
           <div><strong id="statNew">0</strong><span>новых</span></div>
           <div><strong id="statDue">0</strong><span>повторить</span></div>
           <div><strong id="statHard">0</strong><span>трудных</span></div>
@@ -37,22 +64,22 @@
         </div>
       </section>
 
-      <nav class="deck-tabs" aria-label="Колоды урока">
-        <button class="deck-tab is-active" type="button" data-deck="main">
-          <span>Основное</span><small id="countMain">0</small>
-        </button>
-        <button class="deck-tab" type="button" data-deck="grammar">
-          <span>Грамматика</span><small id="countGrammar">0</small>
-        </button>
-        <button class="deck-tab" type="button" data-deck="reading">
-          <span>Чтение</span><small id="countReading">0</small>
-        </button>
+      <nav class="deck-tabs" aria-label="Разделы карточек">
+        <button class="deck-tab is-active" type="button" data-deck="words"><span>Слова</span><small data-count="words">0</small></button>
+        <button class="deck-tab" type="button" data-deck="phrases"><span>Фразы</span><small data-count="phrases">0</small></button>
+        <button class="deck-tab" type="button" data-deck="grammar"><span>Грамматика</span><small data-count="grammar">0</small></button>
+        <button class="deck-tab" type="button" data-deck="reading"><span>Чтение</span><small data-count="reading">0</small></button>
       </nav>
 
       <section class="study-controls" aria-label="Настройки тренировки">
         <label>
+          <span>Урок</span>
+          <select id="lessonSelect" aria-label="Выбор урока"></select>
+        </label>
+        <label>
           <span>Что учим</span>
           <select id="studyMode">
+            <option value="smart">Тренировка: повторение + новые</option>
             <option value="all">Все карточки</option>
             <option value="new">Только новые</option>
             <option value="due">На повторение</option>
@@ -62,9 +89,7 @@
         </label>
         <label>
           <span>Тип</span>
-          <select id="typeFilter">
-            <option value="all">Все типы</option>
-          </select>
+          <select id="typeFilter"><option value="all">Все типы</option></select>
         </label>
         <label>
           <span>Направление</span>
@@ -79,16 +104,17 @@
       <section class="trainer" aria-live="polite">
         <div class="progress-line" aria-hidden="true"><span id="progressFill"></span></div>
         <div class="card-meta">
-          <span class="pill" id="cardType">Выражение</span>
-          <span id="cardSection">Приветствия</span>
+          <span class="pill" id="cardType">Слово</span>
+          <span id="cardSection"></span>
           <span class="meta-spacer"></span>
-          <span id="cardPage">стр. 14</span>
+          <span id="cardPage"></span>
         </div>
 
         <article class="flashcard" id="flashcard" tabindex="0" aria-label="Учебная карточка. Нажмите, чтобы показать ответ">
           <div class="prompt-side">
             <p class="side-label" id="promptLabel">По-сербски</p>
-            <div class="card-text" id="promptText">Dobro jutro!</div>
+            <div class="card-text" id="promptText"></div>
+            <div class="card-alt" id="promptAlt" hidden></div>
             <button class="speak-button" id="speakButton" type="button" aria-label="Прослушать произношение">
               <span aria-hidden="true">🔊</span><span>Слушать</span>
             </button>
@@ -96,7 +122,9 @@
           <div class="answer-side" id="answerSide" hidden>
             <div class="divider"></div>
             <p class="side-label" id="answerLabel">По-русски</p>
-            <div class="answer-text" id="answerText">Доброе утро!</div>
+            <div class="answer-text" id="answerText"></div>
+            <div class="card-alt" id="answerAlt" hidden></div>
+            <p class="forms" id="forms" hidden></p>
             <p class="variants" id="variants" hidden></p>
             <p class="note" id="note" hidden></p>
           </div>
@@ -113,16 +141,43 @@
 
       <section class="empty-state" id="emptyState" hidden>
         <div aria-hidden="true">✓</div>
-        <h2>В этой подборке всё готово</h2>
-        <p>Выберите другой режим или колоду.</p>
+        <h2 id="emptyTitle">В этой подборке всё готово</h2>
+        <p id="emptyText">Выберите другой режим или колоду.</p>
         <button type="button" id="showAllButton">Показать все карточки</button>
       </section>
 
-      <p class="source-note">По материалам урока 1, страницы 5–17. Прогресс хранится только на этом устройстве.</p>
+      <p class="source-note" id="sourceNote"></p>
     </main>
   </div>
 
-  <script src="words.js"></script>
+  <script src="data/meta.js"></script>
+  <!-- LESSON-SCRIPTS:START -->
+  <script src="data/lesson-00.js"></script>
+  <script src="data/lesson-01.js"></script>
+  <script src="data/lesson-02.js"></script>
+  <script src="data/lesson-03.js"></script>
+  <script src="data/lesson-04.js"></script>
+  <script src="data/lesson-05.js"></script>
+  <script src="data/lesson-06.js"></script>
+  <script src="data/lesson-07.js"></script>
+  <script src="data/lesson-08.js"></script>
+  <script src="data/lesson-09.js"></script>
+  <script src="data/lesson-10.js"></script>
+  <script src="data/lesson-11.js"></script>
+  <script src="data/lesson-12.js"></script>
+  <script src="data/lesson-13.js"></script>
+  <script src="data/lesson-14.js"></script>
+  <script src="data/lesson-15.js"></script>
+  <script src="data/lesson-16.js"></script>
+  <script src="data/lesson-17.js"></script>
+  <script src="data/lesson-18.js"></script>
+  <script src="data/lesson-19.js"></script>
+  <script src="data/lesson-20.js"></script>
+  <script src="data/lesson-21.js"></script>
+  <script src="data/lesson-22.js"></script>
+  <script src="data/lesson-23.js"></script>
+  <script src="data/lesson-24.js"></script>
+  <!-- LESSON-SCRIPTS:END -->
   <script src="app.js"></script>
 </body>
 </html>
