@@ -399,6 +399,7 @@
   }
 
   function lessonLabel(lesson) {
+    if (LESSONS[lesson]?.label) return LESSONS[lesson].label;
     return lesson === 0 ? "Вводный урок" : `Урок ${lesson}`;
   }
 

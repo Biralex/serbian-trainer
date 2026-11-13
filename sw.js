@@ -1,7 +1,7 @@
 // Офлайн-кэш. При выпуске новой версии увеличить номер в CACHE.
 const PREFIX = "govori-srpski-";
 const CACHE = PREFIX + "v1";
-const LESSON_FILES = Array.from({ length: 25 }, (_, i) => `./data/lesson-${String(i).padStart(2, "0")}.js`);
+const LESSON_FILES = Array.from({ length: 26 }, (_, i) => `./data/lesson-${String(i).padStart(2, "0")}.js`);
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./data/meta.js", "./manifest.webmanifest", "./icon.svg", ...LESSON_FILES];
 
 self.addEventListener("install", event => {
